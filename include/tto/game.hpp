@@ -22,6 +22,7 @@ public:
 
 private:
     bool has_won(char player) const;
+    bool board_is_full() const;
     bool row_is_full(std::size_t row, char player) const;
     bool column_is_full(std::size_t col, char player) const;
 
