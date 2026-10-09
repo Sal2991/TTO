@@ -29,7 +29,7 @@ void print_board(const tto::Game& game) {
     }
 }
 
-bool read_number(const std::string& prompt, int& value) {
+bool read_dimensions(const std::string& prompt, int& value) {
     std::string line;
     std::cout << prompt;
 
@@ -39,11 +39,33 @@ bool read_number(const std::string& prompt, int& value) {
 
     std::istringstream input(line);
     char extra = '\0';
-    return (input >> value) && !(input >> extra);
+    if (!(input >> value) || (input >> extra) || value < 2 || value > 10) {
+        std::cout << "Enter a whole number from 2 to 10.\n";
+        return false;
+    }
+
+    return true;
+}
+
+bool read_move(int& row, int& col) {
+    std::string line;
+    if (!std::getline(std::cin, line)) {
+        return false;
+    }
+
+    std::istringstream input(line);
+    char extra = '\0';
+    if (!(input >> row >> col) || (input >> extra)) {
+        std::cout << "Enter row and column, like 2 3.\n";
+        return true;
+    }
+
+    return true;
 }
 
 bool play_again() {
     std::string answer;
+
     while (true) {
         std::cout << "Play again? (y/n): ";
         if (!std::getline(std::cin, answer)) {
@@ -57,7 +79,7 @@ bool play_again() {
             return false;
         }
 
-        std::cout << "Enter y or n.\n";
+        std::cout << "Please enter y or n.\n";
     }
 }
 
@@ -69,20 +91,11 @@ void play_game(std::size_t rows, std::size_t cols) {
         int row = 0;
         int col = 0;
 
-        if (!read_number("Player " + std::string(1, game.current_player()) +
-                             ", enter row and column: ",
-                         row)) {
-            return;
-        }
+        std::cout << "Player " << game.current_player()
+                  << ", enter row and column: ";
 
-        std::string line;
-        if (!std::getline(std::cin, line)) {
+        if (!read_move(row, col)) {
             return;
-        }
-        std::istringstream input(line);
-        if (!(input >> col) || (input >> std::ws && !input.eof())) {
-            std::cout << "Enter two numbers, such as: 2 3\n";
-            continue;
         }
 
         if (row < 1 || col < 1 ||
@@ -107,18 +120,16 @@ int main() {
     int cols = 3;
 
     while (true) {
-        if (!read_number("Rows (2-10): ", rows) ||
-            rows < 2 || rows > 10) {
-            std::cout << "Please enter a whole number from 2 to 10.\n";
+        if (!read_dimensions("Rows (2-10): ", rows)) {
+            if (!std::cin) return 0;
             continue;
         }
         break;
     }
 
     while (true) {
-        if (!read_number("Columns (2-10): ", cols) ||
-            cols < 2 || cols > 10) {
-            std::cout << "Please enter a whole number from 2 to 10.\n";
+        if (!read_dimensions("Columns (2-10): ", cols)) {
+            if (!std::cin) return 0;
             continue;
         }
         break;
@@ -126,6 +137,7 @@ int main() {
 
     do {
         play_game(static_cast<std::size_t>(rows), static_cast<std::size_t>(cols));
+        if (!std::cin) break;
     } while (play_again());
 
     std::cout << "Goodbye!\n";
