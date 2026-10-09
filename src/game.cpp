@@ -20,7 +20,7 @@ bool Game::make_move(std::size_t row, std::size_t col) {
 
     if (has_won(current_player_)) {
         winner_ = current_player_;
-    } else if (is_draw()) {
+    } else if (board_is_full()) {
         draw_ = true;
     } else {
         current_player_ = current_player_ == 'X' ? 'O' : 'X';
@@ -71,6 +71,18 @@ bool Game::is_draw() const noexcept {
 
 bool Game::finished() const noexcept {
     return winner_ != ' ' || draw_;
+}
+
+bool Game::board_is_full() const {
+    for (const auto& row : board_) {
+        for (char cell : row) {
+            if (cell == ' ') {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
 
 bool Game::row_is_full(std::size_t row, char player) const {
