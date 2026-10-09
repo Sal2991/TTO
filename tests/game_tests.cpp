@@ -46,6 +46,14 @@ int main() {
     }
 
     {
+        tto::Game game(2, 2);
+        assert(game.make_move(0, 0)); // X
+        assert(game.make_move(0, 1)); // O
+        assert(game.make_move(1, 0)); // X wins column? no, this is diagonal? 
+        assert(!game.is_draw());
+    }
+
+    {
         tto::Game game;
         assert(game.make_move(0, 0));
         game.reset();
