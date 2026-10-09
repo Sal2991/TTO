@@ -46,11 +46,19 @@ int main() {
     }
 
     {
-        tto::Game game(2, 2);
+        tto::Game game;
         assert(game.make_move(0, 0)); // X
         assert(game.make_move(0, 1)); // O
-        assert(game.make_move(1, 0)); // X wins column? no, this is diagonal? 
-        assert(!game.is_draw());
+        assert(game.make_move(0, 2)); // X
+        assert(game.make_move(1, 1)); // O
+        assert(game.make_move(1, 0)); // X
+        assert(game.make_move(1, 2)); // O
+        assert(game.make_move(2, 1)); // X
+        assert(game.make_move(2, 0)); // O
+        assert(game.make_move(2, 2)); // X
+        assert(game.is_draw());
+        assert(game.finished());
+        assert(game.winner() == ' ');
     }
 
     {
